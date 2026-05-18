@@ -17,7 +17,10 @@ import { Route as AppUsuariosSusRouteImport } from './routes/app.usuarios-sus'
 import { Route as AppUnidadesSaudeRouteImport } from './routes/app.unidades-saude'
 import { Route as AppUnidadesNotificadorasRouteImport } from './routes/app.unidades-notificadoras'
 import { Route as AppProfissionaisRouteImport } from './routes/app.profissionais'
+import { Route as AppPapeisRouteImport } from './routes/app.papeis'
 import { Route as AppNotificacoesRouteImport } from './routes/app.notificacoes'
+import { Route as AppNotificacoesIdRouteImport } from './routes/app.notificacoes.$id'
+import { Route as AppNotificacoesNovaUsuarioIdRouteImport } from './routes/app.notificacoes.nova.$usuarioId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -60,44 +63,69 @@ const AppProfissionaisRoute = AppProfissionaisRouteImport.update({
   path: '/profissionais',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPapeisRoute = AppPapeisRouteImport.update({
+  id: '/papeis',
+  path: '/papeis',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNotificacoesRoute = AppNotificacoesRouteImport.update({
   id: '/notificacoes',
   path: '/notificacoes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppNotificacoesIdRoute = AppNotificacoesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppNotificacoesRoute,
+} as any)
+const AppNotificacoesNovaUsuarioIdRoute =
+  AppNotificacoesNovaUsuarioIdRouteImport.update({
+    id: '/nova/$usuarioId',
+    path: '/nova/$usuarioId',
+    getParentRoute: () => AppNotificacoesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/app/notificacoes': typeof AppNotificacoesRoute
+  '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
+  '/app/papeis': typeof AppPapeisRoute
   '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app/': typeof AppIndexRoute
+  '/app/notificacoes/$id': typeof AppNotificacoesIdRoute
+  '/app/notificacoes/nova/$usuarioId': typeof AppNotificacoesNovaUsuarioIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/app/notificacoes': typeof AppNotificacoesRoute
+  '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
+  '/app/papeis': typeof AppPapeisRoute
   '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app': typeof AppIndexRoute
+  '/app/notificacoes/$id': typeof AppNotificacoesIdRoute
+  '/app/notificacoes/nova/$usuarioId': typeof AppNotificacoesNovaUsuarioIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/app/notificacoes': typeof AppNotificacoesRoute
+  '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
+  '/app/papeis': typeof AppPapeisRoute
   '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app/': typeof AppIndexRoute
+  '/app/notificacoes/$id': typeof AppNotificacoesIdRoute
+  '/app/notificacoes/nova/$usuarioId': typeof AppNotificacoesNovaUsuarioIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,32 +134,41 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/app/notificacoes'
+    | '/app/papeis'
     | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
     | '/app/usuarios-sus'
     | '/app/'
+    | '/app/notificacoes/$id'
+    | '/app/notificacoes/nova/$usuarioId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/app/notificacoes'
+    | '/app/papeis'
     | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
     | '/app/usuarios-sus'
     | '/app'
+    | '/app/notificacoes/$id'
+    | '/app/notificacoes/nova/$usuarioId'
   id:
     | '__root__'
     | '/'
     | '/app'
     | '/login'
     | '/app/notificacoes'
+    | '/app/papeis'
     | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
     | '/app/usuarios-sus'
     | '/app/'
+    | '/app/notificacoes/$id'
+    | '/app/notificacoes/nova/$usuarioId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -198,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfissionaisRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/papeis': {
+      id: '/app/papeis'
+      path: '/papeis'
+      fullPath: '/app/papeis'
+      preLoaderRoute: typeof AppPapeisRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/notificacoes': {
       id: '/app/notificacoes'
       path: '/notificacoes'
@@ -205,11 +249,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificacoesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/notificacoes/$id': {
+      id: '/app/notificacoes/$id'
+      path: '/$id'
+      fullPath: '/app/notificacoes/$id'
+      preLoaderRoute: typeof AppNotificacoesIdRouteImport
+      parentRoute: typeof AppNotificacoesRoute
+    }
+    '/app/notificacoes/nova/$usuarioId': {
+      id: '/app/notificacoes/nova/$usuarioId'
+      path: '/nova/$usuarioId'
+      fullPath: '/app/notificacoes/nova/$usuarioId'
+      preLoaderRoute: typeof AppNotificacoesNovaUsuarioIdRouteImport
+      parentRoute: typeof AppNotificacoesRoute
+    }
   }
 }
 
+interface AppNotificacoesRouteChildren {
+  AppNotificacoesIdRoute: typeof AppNotificacoesIdRoute
+  AppNotificacoesNovaUsuarioIdRoute: typeof AppNotificacoesNovaUsuarioIdRoute
+}
+
+const AppNotificacoesRouteChildren: AppNotificacoesRouteChildren = {
+  AppNotificacoesIdRoute: AppNotificacoesIdRoute,
+  AppNotificacoesNovaUsuarioIdRoute: AppNotificacoesNovaUsuarioIdRoute,
+}
+
+const AppNotificacoesRouteWithChildren = AppNotificacoesRoute._addFileChildren(
+  AppNotificacoesRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppNotificacoesRoute: typeof AppNotificacoesRoute
+  AppNotificacoesRoute: typeof AppNotificacoesRouteWithChildren
+  AppPapeisRoute: typeof AppPapeisRoute
   AppProfissionaisRoute: typeof AppProfissionaisRoute
   AppUnidadesNotificadorasRoute: typeof AppUnidadesNotificadorasRoute
   AppUnidadesSaudeRoute: typeof AppUnidadesSaudeRoute
@@ -218,7 +291,8 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppNotificacoesRoute: AppNotificacoesRoute,
+  AppNotificacoesRoute: AppNotificacoesRouteWithChildren,
+  AppPapeisRoute: AppPapeisRoute,
   AppProfissionaisRoute: AppProfissionaisRoute,
   AppUnidadesNotificadorasRoute: AppUnidadesNotificadorasRoute,
   AppUnidadesSaudeRoute: AppUnidadesSaudeRoute,
@@ -236,3 +310,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
