@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppUnidadesSaudeRouteImport } from './routes/app.unidades-saude'
+import { Route as AppUnidadesNotificadorasRouteImport } from './routes/app.unidades-notificadoras'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -40,17 +41,25 @@ const AppUnidadesSaudeRoute = AppUnidadesSaudeRouteImport.update({
   path: '/unidades-saude',
   getParentRoute: () => AppRoute,
 } as any)
+const AppUnidadesNotificadorasRoute =
+  AppUnidadesNotificadorasRouteImport.update({
+    id: '/unidades-notificadoras',
+    path: '/unidades-notificadoras',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app': typeof AppIndexRoute
 }
@@ -59,15 +68,34 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/login' | '/app/unidades-saude' | '/app/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/app/unidades-notificadoras'
+    | '/app/unidades-saude'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/app/unidades-saude' | '/app'
-  id: '__root__' | '/' | '/app' | '/login' | '/app/unidades-saude' | '/app/'
+  to:
+    | '/'
+    | '/login'
+    | '/app/unidades-notificadoras'
+    | '/app/unidades-saude'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/login'
+    | '/app/unidades-notificadoras'
+    | '/app/unidades-saude'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -113,15 +141,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUnidadesSaudeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/unidades-notificadoras': {
+      id: '/app/unidades-notificadoras'
+      path: '/unidades-notificadoras'
+      fullPath: '/app/unidades-notificadoras'
+      preLoaderRoute: typeof AppUnidadesNotificadorasRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppUnidadesNotificadorasRoute: typeof AppUnidadesNotificadorasRoute
   AppUnidadesSaudeRoute: typeof AppUnidadesSaudeRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppUnidadesNotificadorasRoute: AppUnidadesNotificadorasRoute,
   AppUnidadesSaudeRoute: AppUnidadesSaudeRoute,
   AppIndexRoute: AppIndexRoute,
 }
