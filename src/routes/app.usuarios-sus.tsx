@@ -67,11 +67,14 @@ function Page() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const payload: Record<string, unknown> = { ...form };
-    if (!payload.dt_nascimento) payload.dt_nascimento = null;
-    if (payload.idade_gestacional === "" || payload.idade_gestacional == null) payload.idade_gestacional = null;
-    else payload.idade_gestacional = Number(payload.idade_gestacional);
-    const { error } = await supabase.from("usuarios_sus").insert(payload);
+    const { idade_gestacional, dt_nascimento, ...rest } = form;
+    const payload = {
+      ...rest,
+      dt_nascimento: dt_nascimento || null,
+      idade_gestacional: idade_gestacional === "" || idade_gestacional == null ? null : Number(idade_gestacional),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await supabase.from("usuarios_sus").insert(payload as any);
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Usuário SUS cadastrado");
