@@ -6,20 +6,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { TIPO_UNIDADE, ESFERA_ADMIN, GESTAO, NIVEL_ATENCAO } from "@/lib/violencia-options";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
-export const Route = createFileRoute("/app/unidades-saude")({
-  component: Page,
-});
+export const Route = createFileRoute("/app/unidades-saude")({ component: Page });
 
-type Row = {
-  id: string; nome: string; cnes: string | null; uf: string | null;
-  municipio: string | null; cod_ibge: string | null; codigo_unidade: string | null; equipe: string | null;
+const empty = {
+  nome: "", cnes: "", codigo_unidade: "", cnpj: "",
+  uf: "", municipio: "", cod_ibge: "", distrito: "", bairro: "",
+  logradouro: "", numero: "", complemento: "", cep: "", ponto_referencia: "",
+  tipo_unidade: "", subtipo: "", esfera_administrativa: "", gestao: "", nivel_atencao: "",
+  telefone: "", email: "", equipe: "", horario_funcionamento: "",
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Row = any;
 
 function Page() {
   const [rows, setRows] = useState<Row[]>([]);
-  const [form, setForm] = useState({ nome: "", cnes: "", uf: "", municipio: "", cod_ibge: "", codigo_unidade: "", equipe: "" });
+  const [form, setForm] = useState({ ...empty });
+  const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
   async function load() {
@@ -28,6 +38,10 @@ function Page() {
   }
   useEffect(() => { load(); }, []);
 
+  function set<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
+    setForm((f) => ({ ...f, [k]: v }));
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -35,47 +49,109 @@ function Page() {
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Unidade cadastrada");
-    setForm({ nome: "", cnes: "", uf: "", municipio: "", cod_ibge: "", codigo_unidade: "", equipe: "" });
+    setForm({ ...empty });
+    setOpen(false);
     load();
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Unidades de Saúde</h1>
-      <Card>
-        <CardHeader><CardTitle>Nova unidade</CardTitle></CardHeader>
-        <CardContent>
-          <form onSubmit={save} className="grid gap-3 md:grid-cols-4">
-            <div className="md:col-span-2 space-y-1"><Label>Unidade de Saúde *</Label>
-              <Input required value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></div>
-            <div className="space-y-1"><Label>Cód. C.N.E.S.</Label>
-              <Input value={form.cnes} onChange={(e) => setForm({ ...form, cnes: e.target.value })} /></div>
-            <div className="space-y-1"><Label>Código Unidade</Label>
-              <Input value={form.codigo_unidade} onChange={(e) => setForm({ ...form, codigo_unidade: e.target.value })} placeholder="ex: 39" /></div>
-            <div className="space-y-1"><Label>UF</Label>
-              <Input maxLength={2} value={form.uf} onChange={(e) => setForm({ ...form, uf: e.target.value.toUpperCase() })} /></div>
-            <div className="space-y-1"><Label>Município</Label>
-              <Input value={form.municipio} onChange={(e) => setForm({ ...form, municipio: e.target.value })} /></div>
-            <div className="space-y-1"><Label>Cód. IBGE</Label>
-              <Input value={form.cod_ibge} onChange={(e) => setForm({ ...form, cod_ibge: e.target.value })} /></div>
-            <div className="space-y-1"><Label>Equipe</Label>
-              <Input value={form.equipe} onChange={(e) => setForm({ ...form, equipe: e.target.value })} placeholder="ex: 57" /></div>
-            <div className="md:col-span-4"><Button disabled={busy} type="submit">{busy ? "Salvando..." : "Salvar"}</Button></div>
-          </form>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Unidades de Saúde</h1>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Nova unidade</Button></DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Nova Unidade de Saúde</DialogTitle></DialogHeader>
+            <form onSubmit={save} className="space-y-4">
+              <Tabs defaultValue="principal">
+                <TabsList className="flex-wrap h-auto">
+                  <TabsTrigger value="principal">Principal</TabsTrigger>
+                  <TabsTrigger value="endereco">Endereço</TabsTrigger>
+                  <TabsTrigger value="outras">Outras Inf.</TabsTrigger>
+                  <TabsTrigger value="contato">Contato</TabsTrigger>
+                </TabsList>
+                <TabsContent value="principal" className="pt-3">
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <div className="md:col-span-2 space-y-1"><Label>Unidade de Saúde *</Label>
+                      <Input required value={form.nome} onChange={(e) => set("nome", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Código Unidade</Label>
+                      <Input value={form.codigo_unidade} onChange={(e) => set("codigo_unidade", e.target.value)} placeholder="ex: 39" /></div>
+                    <div className="space-y-1"><Label>Equipe</Label>
+                      <Input value={form.equipe} onChange={(e) => set("equipe", e.target.value)} placeholder="ex: 57" /></div>
+                    <div className="space-y-1"><Label>Horário de Funcionamento</Label>
+                      <Input value={form.horario_funcionamento} onChange={(e) => set("horario_funcionamento", e.target.value)} placeholder="07h–17h" /></div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="endereco" className="pt-3">
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <div className="space-y-1"><Label>CEP</Label><Input value={form.cep} onChange={(e) => set("cep", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>UF</Label><Input maxLength={2} value={form.uf} onChange={(e) => set("uf", e.target.value.toUpperCase())} /></div>
+                    <div className="space-y-1"><Label>Município IBGE</Label><Input value={form.municipio} onChange={(e) => set("municipio", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Cód. IBGE</Label><Input value={form.cod_ibge} onChange={(e) => set("cod_ibge", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Distrito</Label><Input value={form.distrito} onChange={(e) => set("distrito", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Bairro</Label><Input value={form.bairro} onChange={(e) => set("bairro", e.target.value)} /></div>
+                    <div className="md:col-span-2 space-y-1"><Label>Logradouro</Label><Input value={form.logradouro} onChange={(e) => set("logradouro", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Número</Label><Input value={form.numero} onChange={(e) => set("numero", e.target.value)} /></div>
+                    <div className="md:col-span-2 space-y-1"><Label>Complemento</Label><Input value={form.complemento} onChange={(e) => set("complemento", e.target.value)} /></div>
+                    <div className="md:col-span-3 space-y-1"><Label>Ponto de Referência</Label><Input value={form.ponto_referencia} onChange={(e) => set("ponto_referencia", e.target.value)} /></div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="outras" className="pt-3">
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <div className="space-y-1"><Label>Cód. C.N.E.S.</Label><Input value={form.cnes} onChange={(e) => set("cnes", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>CNPJ</Label><Input value={form.cnpj} onChange={(e) => set("cnpj", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Tipo de Unidade</Label>
+                      <Select value={form.tipo_unidade} onValueChange={(v) => set("tipo_unidade", v)}>
+                        <SelectTrigger><SelectValue placeholder="..." /></SelectTrigger>
+                        <SelectContent>{TIPO_UNIDADE.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                      </Select></div>
+                    <div className="space-y-1"><Label>Subtipo</Label><Input value={form.subtipo} onChange={(e) => set("subtipo", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>Esfera Administrativa</Label>
+                      <Select value={form.esfera_administrativa} onValueChange={(v) => set("esfera_administrativa", v)}>
+                        <SelectTrigger><SelectValue placeholder="..." /></SelectTrigger>
+                        <SelectContent>{ESFERA_ADMIN.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                      </Select></div>
+                    <div className="space-y-1"><Label>Gestão</Label>
+                      <Select value={form.gestao} onValueChange={(v) => set("gestao", v)}>
+                        <SelectTrigger><SelectValue placeholder="..." /></SelectTrigger>
+                        <SelectContent>{GESTAO.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                      </Select></div>
+                    <div className="space-y-1"><Label>Nível de Atenção</Label>
+                      <Select value={form.nivel_atencao} onValueChange={(v) => set("nivel_atencao", v)}>
+                        <SelectTrigger><SelectValue placeholder="..." /></SelectTrigger>
+                        <SelectContent>{NIVEL_ATENCAO.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                      </Select></div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="contato" className="pt-3">
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="space-y-1"><Label>Telefone</Label><Input value={form.telefone} onChange={(e) => set("telefone", e.target.value)} /></div>
+                    <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+              <div className="flex justify-end gap-2 pt-2 border-t">
+                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+                <Button type="submit" disabled={busy}>{busy ? "Salvando..." : "Salvar"}</Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
       <Card>
         <CardHeader><CardTitle>Cadastradas ({rows.length})</CardTitle></CardHeader>
         <CardContent>
           <Table>
             <TableHeader><TableRow>
               <TableHead>Nome</TableHead><TableHead>CNES</TableHead><TableHead>Cód</TableHead>
-              <TableHead>UF</TableHead><TableHead>Município</TableHead><TableHead>Equipe</TableHead>
+              <TableHead>UF</TableHead><TableHead>Município</TableHead><TableHead>Tipo</TableHead><TableHead>Equipe</TableHead>
             </TableRow></TableHeader>
             <TableBody>{rows.map((r) => (
               <TableRow key={r.id}>
-                <TableCell>{r.nome}</TableCell><TableCell>{r.cnes}</TableCell><TableCell>{r.codigo_unidade}</TableCell>
-                <TableCell>{r.uf}</TableCell><TableCell>{r.municipio}</TableCell><TableCell>{r.equipe}</TableCell>
+                <TableCell className="font-medium">{r.nome}</TableCell>
+                <TableCell>{r.cnes}</TableCell><TableCell>{r.codigo_unidade}</TableCell>
+                <TableCell>{r.uf}</TableCell><TableCell>{r.municipio}</TableCell>
+                <TableCell>{r.tipo_unidade}</TableCell><TableCell>{r.equipe}</TableCell>
               </TableRow>
             ))}</TableBody>
           </Table>

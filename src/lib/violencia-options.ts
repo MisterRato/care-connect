@@ -233,3 +233,44 @@ export function calcIdade(dt?: string | null): number | "" {
   if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
   return age;
 }
+
+// ===== Catálogos adicionais e-SUS (Fase 2) =====
+
+export const TIPO_UNIDADE = [
+  "Centro de Saúde / UBS",
+  "Unidade de Saúde da Família",
+  "Posto de Saúde",
+  "Policlínica",
+  "Pronto Atendimento",
+  "Hospital Geral",
+  "Hospital Especializado",
+  "CAPS",
+  "Unidade de Vigilância em Saúde",
+  "Outros",
+];
+
+export const ESFERA_ADMIN = ["Federal", "Estadual", "Municipal", "Privada"];
+export const GESTAO = ["Municipal", "Estadual", "Dupla"];
+export const NIVEL_ATENCAO = ["Primária", "Secundária", "Terciária"];
+
+export const SITUACAO_TRABALHO = [
+  "Empregado registrado (CLT)",
+  "Empregado não registrado",
+  "Autônomo",
+  "Servidor público",
+  "Aposentado",
+  "Desempregado",
+  "Estudante",
+  "Do lar",
+  "Outro",
+];
+
+export const TIPO_DOMICILIO = ["Casa", "Apartamento", "Cômodo", "Outro"];
+export const MATERIAL_PAREDE = ["Alvenaria", "Madeira aproveitada", "Madeira aparelhada", "Taipa revestida", "Taipa não revestida", "Palha", "Outro"];
+export const ABASTECIMENTO_AGUA = ["Rede geral", "Poço/nascente", "Cisterna", "Carro pipa", "Outro"];
+export const TRATAMENTO_AGUA = ["Filtração", "Fervura", "Cloração", "Sem tratamento"];
+export const ESCOAMENTO_SANITARIO = ["Rede coletora", "Fossa séptica", "Fossa rudimentar", "Direto p/ rio", "Céu aberto"];
+export const DESTINO_LIXO = ["Coletado", "Queimado/enterrado", "Céu aberto", "Outro"];
+export const ENERGIA_ELETRICA = ["Sim", "Não"];
+
+export const CONSELHO_CLASSE = ["CRM", "COREN", "CRO", "CRF", "CRP", "CREFITO", "CRESS", "CRBM", "CRN", "Outro"];
