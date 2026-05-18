@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppUnidadesSaudeRouteImport } from './routes/app.unidades-saude'
 import { Route as AppUnidadesNotificadorasRouteImport } from './routes/app.unidades-notificadoras'
+import { Route as AppProfissionaisRouteImport } from './routes/app.profissionais'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -47,11 +48,17 @@ const AppUnidadesNotificadorasRoute =
     path: '/unidades-notificadoras',
     getParentRoute: () => AppRoute,
   } as any)
+const AppProfissionaisRoute = AppProfissionaisRouteImport.update({
+  id: '/profissionais',
+  path: '/profissionais',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/': typeof AppIndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app': typeof AppIndexRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
   '/app/': typeof AppIndexRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
     | '/app/'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
     | '/app'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
     | '/app/'
@@ -148,16 +160,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUnidadesNotificadorasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/profissionais': {
+      id: '/app/profissionais'
+      path: '/profissionais'
+      fullPath: '/app/profissionais'
+      preLoaderRoute: typeof AppProfissionaisRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppProfissionaisRoute: typeof AppProfissionaisRoute
   AppUnidadesNotificadorasRoute: typeof AppUnidadesNotificadorasRoute
   AppUnidadesSaudeRoute: typeof AppUnidadesSaudeRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppProfissionaisRoute: AppProfissionaisRoute,
   AppUnidadesNotificadorasRoute: AppUnidadesNotificadorasRoute,
   AppUnidadesSaudeRoute: AppUnidadesSaudeRoute,
   AppIndexRoute: AppIndexRoute,
