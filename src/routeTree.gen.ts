@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppUsuariosSusRouteImport } from './routes/app.usuarios-sus'
 import { Route as AppUnidadesSaudeRouteImport } from './routes/app.unidades-saude'
 import { Route as AppUnidadesNotificadorasRouteImport } from './routes/app.unidades-notificadoras'
 import { Route as AppProfissionaisRouteImport } from './routes/app.profissionais'
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUsuariosSusRoute = AppUsuariosSusRouteImport.update({
+  id: '/usuarios-sus',
+  path: '/usuarios-sus',
   getParentRoute: () => AppRoute,
 } as any)
 const AppUnidadesSaudeRoute = AppUnidadesSaudeRouteImport.update({
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
+  '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
+  '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/app/profissionais': typeof AppProfissionaisRoute
   '/app/unidades-notificadoras': typeof AppUnidadesNotificadorasRoute
   '/app/unidades-saude': typeof AppUnidadesSaudeRoute
+  '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
+    | '/app/usuarios-sus'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
+    | '/app/usuarios-sus'
     | '/app'
   id:
     | '__root__'
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/app/profissionais'
     | '/app/unidades-notificadoras'
     | '/app/unidades-saude'
+    | '/app/usuarios-sus'
     | '/app/'
   fileRoutesById: FileRoutesById
 }
@@ -146,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/usuarios-sus': {
+      id: '/app/usuarios-sus'
+      path: '/usuarios-sus'
+      fullPath: '/app/usuarios-sus'
+      preLoaderRoute: typeof AppUsuariosSusRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/unidades-saude': {
       id: '/app/unidades-saude'
       path: '/unidades-saude'
@@ -174,6 +193,7 @@ interface AppRouteChildren {
   AppProfissionaisRoute: typeof AppProfissionaisRoute
   AppUnidadesNotificadorasRoute: typeof AppUnidadesNotificadorasRoute
   AppUnidadesSaudeRoute: typeof AppUnidadesSaudeRoute
+  AppUsuariosSusRoute: typeof AppUsuariosSusRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -181,6 +201,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppProfissionaisRoute: AppProfissionaisRoute,
   AppUnidadesNotificadorasRoute: AppUnidadesNotificadorasRoute,
   AppUnidadesSaudeRoute: AppUnidadesSaudeRoute,
+  AppUsuariosSusRoute: AppUsuariosSusRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
