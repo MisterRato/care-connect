@@ -93,26 +93,59 @@ export type Database = {
       }
       profissionais: {
         Row: {
+          cbo: string | null
+          cns: string | null
+          conselho_classe: string | null
+          cpf: string | null
           created_at: string
+          data_admissao: string | null
+          dt_nascimento: string | null
+          email: string | null
           id: string
           nome: string
+          numero_conselho: string | null
           ocupacao: string | null
+          sexo: string | null
+          telefone: string | null
+          uf_conselho: string | null
           unidade_saude_id: string | null
           user_id: string | null
         }
         Insert: {
+          cbo?: string | null
+          cns?: string | null
+          conselho_classe?: string | null
+          cpf?: string | null
           created_at?: string
+          data_admissao?: string | null
+          dt_nascimento?: string | null
+          email?: string | null
           id?: string
           nome: string
+          numero_conselho?: string | null
           ocupacao?: string | null
+          sexo?: string | null
+          telefone?: string | null
+          uf_conselho?: string | null
           unidade_saude_id?: string | null
           user_id?: string | null
         }
         Update: {
+          cbo?: string | null
+          cns?: string | null
+          conselho_classe?: string | null
+          cpf?: string | null
           created_at?: string
+          data_admissao?: string | null
+          dt_nascimento?: string | null
+          email?: string | null
           id?: string
           nome?: string
+          numero_conselho?: string | null
           ocupacao?: string | null
+          sexo?: string | null
+          telefone?: string | null
+          uf_conselho?: string | null
           unidade_saude_id?: string | null
           user_id?: string | null
         }
@@ -149,36 +182,84 @@ export type Database = {
       }
       unidades_saude: {
         Row: {
+          bairro: string | null
+          cep: string | null
           cnes: string | null
+          cnpj: string | null
           cod_ibge: string | null
           codigo_unidade: string | null
+          complemento: string | null
           created_at: string
+          distrito: string | null
+          email: string | null
           equipe: string | null
+          esfera_administrativa: string | null
+          gestao: string | null
+          horario_funcionamento: string | null
           id: string
+          logradouro: string | null
           municipio: string | null
+          nivel_atencao: string | null
           nome: string
+          numero: string | null
+          ponto_referencia: string | null
+          subtipo: string | null
+          telefone: string | null
+          tipo_unidade: string | null
           uf: string | null
         }
         Insert: {
+          bairro?: string | null
+          cep?: string | null
           cnes?: string | null
+          cnpj?: string | null
           cod_ibge?: string | null
           codigo_unidade?: string | null
+          complemento?: string | null
           created_at?: string
+          distrito?: string | null
+          email?: string | null
           equipe?: string | null
+          esfera_administrativa?: string | null
+          gestao?: string | null
+          horario_funcionamento?: string | null
           id?: string
+          logradouro?: string | null
           municipio?: string | null
+          nivel_atencao?: string | null
           nome: string
+          numero?: string | null
+          ponto_referencia?: string | null
+          subtipo?: string | null
+          telefone?: string | null
+          tipo_unidade?: string | null
           uf?: string | null
         }
         Update: {
+          bairro?: string | null
+          cep?: string | null
           cnes?: string | null
+          cnpj?: string | null
           cod_ibge?: string | null
           codigo_unidade?: string | null
+          complemento?: string | null
           created_at?: string
+          distrito?: string | null
+          email?: string | null
           equipe?: string | null
+          esfera_administrativa?: string | null
+          gestao?: string | null
+          horario_funcionamento?: string | null
           id?: string
+          logradouro?: string | null
           municipio?: string | null
+          nivel_atencao?: string | null
           nome?: string
+          numero?: string | null
+          ponto_referencia?: string | null
+          subtipo?: string | null
+          telefone?: string | null
+          tipo_unidade?: string | null
           uf?: string | null
         }
         Relationships: []
@@ -209,103 +290,178 @@ export type Database = {
       }
       usuarios_sus: {
         Row: {
+          abastecimento_agua: string | null
+          area: string | null
           bairro: string | null
           cep: string | null
           cns: string | null
           cod_ibge_municipio: string | null
           complemento: string | null
+          cpf: string | null
           created_at: string
+          data_cadastro_psf: string | null
           deficiencia_outra: string | null
           deficiencia_tipos: Json | null
+          destino_lixo: string | null
           distrito: string | null
+          dpp: string | null
           dt_nascimento: string | null
+          dum: string | null
+          energia_eletrica: string | null
           equipe: string | null
+          escoamento_sanitario: string | null
           escolaridade: string | null
           estado_civil: string | null
           id: string
           idade_gestacional: number | null
           identidade_genero: string | null
           logradouro: string | null
+          material_parede: string | null
+          micro_area: string | null
           municipio: string | null
           nome: string
           nome_mae: string | null
           nome_social: string | null
+          num_comodos: number | null
+          num_consultas_prenatal: number | null
+          num_moradores: number | null
           numero: string | null
+          numero_prontuario: string | null
           ocupacao: string | null
+          ocupacao_cbo: string | null
           orientacao_sexual: string | null
+          passaporte: string | null
           ponto_referencia: string | null
           raca: string | null
+          rg: string | null
+          rg_orgao_emissor: string | null
+          rg_uf: string | null
           sexo: string | null
+          situacao_mercado_trabalho: string | null
           telefone: string | null
           tem_deficiencia: boolean | null
+          tempo_servico: string | null
+          tipo_domicilio: string | null
+          tratamento_agua: string | null
           uf: string | null
           unidade_saude_id: string | null
+          vinculo_trabalho: string | null
         }
         Insert: {
+          abastecimento_agua?: string | null
+          area?: string | null
           bairro?: string | null
           cep?: string | null
           cns?: string | null
           cod_ibge_municipio?: string | null
           complemento?: string | null
+          cpf?: string | null
           created_at?: string
+          data_cadastro_psf?: string | null
           deficiencia_outra?: string | null
           deficiencia_tipos?: Json | null
+          destino_lixo?: string | null
           distrito?: string | null
+          dpp?: string | null
           dt_nascimento?: string | null
+          dum?: string | null
+          energia_eletrica?: string | null
           equipe?: string | null
+          escoamento_sanitario?: string | null
           escolaridade?: string | null
           estado_civil?: string | null
           id?: string
           idade_gestacional?: number | null
           identidade_genero?: string | null
           logradouro?: string | null
+          material_parede?: string | null
+          micro_area?: string | null
           municipio?: string | null
           nome: string
           nome_mae?: string | null
           nome_social?: string | null
+          num_comodos?: number | null
+          num_consultas_prenatal?: number | null
+          num_moradores?: number | null
           numero?: string | null
+          numero_prontuario?: string | null
           ocupacao?: string | null
+          ocupacao_cbo?: string | null
           orientacao_sexual?: string | null
+          passaporte?: string | null
           ponto_referencia?: string | null
           raca?: string | null
+          rg?: string | null
+          rg_orgao_emissor?: string | null
+          rg_uf?: string | null
           sexo?: string | null
+          situacao_mercado_trabalho?: string | null
           telefone?: string | null
           tem_deficiencia?: boolean | null
+          tempo_servico?: string | null
+          tipo_domicilio?: string | null
+          tratamento_agua?: string | null
           uf?: string | null
           unidade_saude_id?: string | null
+          vinculo_trabalho?: string | null
         }
         Update: {
+          abastecimento_agua?: string | null
+          area?: string | null
           bairro?: string | null
           cep?: string | null
           cns?: string | null
           cod_ibge_municipio?: string | null
           complemento?: string | null
+          cpf?: string | null
           created_at?: string
+          data_cadastro_psf?: string | null
           deficiencia_outra?: string | null
           deficiencia_tipos?: Json | null
+          destino_lixo?: string | null
           distrito?: string | null
+          dpp?: string | null
           dt_nascimento?: string | null
+          dum?: string | null
+          energia_eletrica?: string | null
           equipe?: string | null
+          escoamento_sanitario?: string | null
           escolaridade?: string | null
           estado_civil?: string | null
           id?: string
           idade_gestacional?: number | null
           identidade_genero?: string | null
           logradouro?: string | null
+          material_parede?: string | null
+          micro_area?: string | null
           municipio?: string | null
           nome?: string
           nome_mae?: string | null
           nome_social?: string | null
+          num_comodos?: number | null
+          num_consultas_prenatal?: number | null
+          num_moradores?: number | null
           numero?: string | null
+          numero_prontuario?: string | null
           ocupacao?: string | null
+          ocupacao_cbo?: string | null
           orientacao_sexual?: string | null
+          passaporte?: string | null
           ponto_referencia?: string | null
           raca?: string | null
+          rg?: string | null
+          rg_orgao_emissor?: string | null
+          rg_uf?: string | null
           sexo?: string | null
+          situacao_mercado_trabalho?: string | null
           telefone?: string | null
           tem_deficiencia?: boolean | null
+          tempo_servico?: string | null
+          tipo_domicilio?: string | null
+          tratamento_agua?: string | null
           uf?: string | null
           unidade_saude_id?: string | null
+          vinculo_trabalho?: string | null
         }
         Relationships: [
           {
