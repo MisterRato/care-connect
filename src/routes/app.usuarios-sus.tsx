@@ -252,7 +252,7 @@ function Page() {
                       ["Energia Elétrica", "energia_eletrica", ENERGIA_ELETRICA],
                     ].map(([label, key, opts]) => (
                       <div key={key as string} className="space-y-1"><Label>{label as string}</Label>
-                        <Select value={(form as Record<string, string>)[key as string]} onValueChange={(v) => set(key as keyof typeof form, v as never)}>
+                        <Select value={(form as unknown as Record<string, string>)[key as string]} onValueChange={(v) => set(key as keyof typeof form, v as never)}>
                           <SelectTrigger><SelectValue placeholder="..." /></SelectTrigger>
                           <SelectContent>{(opts as string[]).map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
                         </Select></div>
