@@ -17,6 +17,7 @@ export const Route = createFileRoute("/app")({
 
 function AppLayout() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { loading, session, roles, isAdmin, isEpi, isUbs, signOut, user } = useAuth();
 
   useEffect(() => {
