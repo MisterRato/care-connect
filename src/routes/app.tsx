@@ -37,26 +37,45 @@ function AppLayout() {
             <Link to="/app" activeProps={{ className: "text-primary font-medium" }} activeOptions={{ exact: true }}>
               Início
             </Link>
-            <Link to="/app/usuarios-sus" activeProps={{ className: "text-primary font-medium" }}>
-              Usuários SUS
-            </Link>
             <Link to="/app/notificacoes" activeProps={{ className: "text-primary font-medium" }}>
               Notificações
             </Link>
-            <Link to="/app/unidades-saude" activeProps={{ className: "text-primary font-medium" }}>
-              Unidades de Saúde
-            </Link>
-            <Link to="/app/unidades-notificadoras" activeProps={{ className: "text-primary font-medium" }}>
-              Unid. Notificadoras
-            </Link>
-            <Link to="/app/profissionais" activeProps={{ className: "text-primary font-medium" }}>
-              Profissionais
-            </Link>
-            {isAdmin && (
-              <Link to="/app/papeis" activeProps={{ className: "text-primary font-medium" }}>
-                Papéis
-              </Link>
-            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={`inline-flex items-center gap-1 transition-colors hover:text-foreground ${
+                    pathname.startsWith("/app/usuarios-sus") ||
+                    pathname.startsWith("/app/unidades-saude") ||
+                    pathname.startsWith("/app/unidades-notificadoras") ||
+                    pathname.startsWith("/app/profissionais") ||
+                    pathname.startsWith("/app/papeis")
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  Cadastro <ChevronDown className="h-3 w-3" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem asChild>
+                  <Link to="/app/usuarios-sus" className="w-full cursor-pointer">Usuários SUS</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/app/unidades-saude" className="w-full cursor-pointer">Unidades de Saúde</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/app/unidades-notificadoras" className="w-full cursor-pointer">Unid. Notificadoras</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/app/profissionais" className="w-full cursor-pointer">Profissionais</Link>
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/app/papeis" className="w-full cursor-pointer">Papéis</Link>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <span className="text-xs text-muted-foreground">{user?.email}</span>
