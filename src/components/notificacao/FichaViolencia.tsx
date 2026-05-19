@@ -19,6 +19,8 @@ import {
 } from "@/lib/violencia-options";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
+import { exportFichaPDF } from "@/lib/sinan-pdf";
+import { FileDown } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -570,6 +572,17 @@ export function FichaViolencia({ usuario, notificacao }: Props) {
       </Tabs>
 
       <div className="flex flex-wrap gap-2 pt-4 border-t">
+        <Button variant="outline" onClick={() => exportFichaPDF({
+          usuario,
+          notificacao,
+          payload: f,
+          circLesao,
+          unidade: unidades.find((u) => u.id === f.unidade_saude_id),
+          unidadeNotif: unidNotif.find((u) => u.id === f.unidade_notificadora_id),
+          profissional: profs.find((p) => p.id === f.profissional_id),
+        })}>
+          <FileDown className="h-4 w-4 mr-1" /> Exportar PDF
+        </Button>
         {(canEditUBS || isAdmin) && (
           <Button onClick={() => save()} disabled={busy}>
             {busy ? "Salvando..." : isNew ? "Salvar notificação" : "Salvar alterações"}
