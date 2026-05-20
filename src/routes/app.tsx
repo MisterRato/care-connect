@@ -40,6 +40,16 @@ function AppLayout() {
             <Link to="/app/notificacoes" activeProps={{ className: "text-primary font-medium" }}>
               Notificações
             </Link>
+            {(isEpi || isAdmin) && (
+              <Link to="/app/epi" activeProps={{ className: "text-primary font-medium" }}>
+                Fila Epi
+              </Link>
+            )}
+            {(isEpi || isAdmin) && (
+              <Link to="/app/export-sinan" activeProps={{ className: "text-primary font-medium" }}>
+                Exportar SINAN
+              </Link>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
