@@ -17,7 +17,7 @@ import {
   DESTINO_LIXO, ENERGIA_ELETRICA, calcIdade,
 } from "@/lib/violencia-options";
 import { toast } from "sonner";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, Pencil } from "lucide-react";
 
 export const Route = createFileRoute("/app/usuarios-sus")({ component: Page });
 
@@ -56,6 +56,7 @@ function Page() {
   const [form, setForm] = useState({ ...empty });
   const [busy, setBusy] = useState(false);
   const [search, setSearch] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
 
   async function load() {
     let q = supabase.from("usuarios_sus").select("id,nome,cns,sexo,dt_nascimento,municipio").order("nome").limit(200);
@@ -76,6 +77,25 @@ function Page() {
     }));
   }
 
+  async function openEdit(id: string) {
+    const { data, error } = await supabase.from("usuarios_sus").select("*").eq("id", id).single();
+    if (error || !data) return toast.error(error?.message ?? "Erro ao carregar");
+    const merged: typeof empty = { ...empty };
+    for (const k of Object.keys(empty) as (keyof typeof empty)[]) {
+      const v = (data as Record<string, unknown>)[k as string];
+      if (v != null) (merged as Record<string, unknown>)[k as string] = Array.isArray(v) ? v : v;
+    }
+    setForm(merged);
+    setEditId(id);
+    setOpen(true);
+  }
+
+  function openNew() {
+    setForm({ ...empty });
+    setEditId(null);
+    setOpen(true);
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -93,12 +113,17 @@ function Page() {
       num_consultas_prenatal: toNum(form.num_consultas_prenatal),
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await supabase.from("usuarios_sus").insert(payload as any);
+    const { error } = editId
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? await supabase.from("usuarios_sus").update(payload as any).eq("id", editId)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      : await supabase.from("usuarios_sus").insert(payload as any);
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Usuário SUS cadastrado");
+    toast.success(editId ? "Usuário SUS atualizado" : "Usuário SUS cadastrado");
     setOpen(false);
     setForm({ ...empty });
+    setEditId(null);
     load();
   }
 
@@ -108,10 +133,10 @@ function Page() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Usuários SUS</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Novo</Button></DialogTrigger>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ ...empty }); } }}>
+          <DialogTrigger asChild><Button onClick={openNew}><Plus className="h-4 w-4 mr-2" />Novo</Button></DialogTrigger>
           <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>Novo Usuário SUS</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editId ? "Editar Usuário SUS" : "Novo Usuário SUS"}</DialogTitle></DialogHeader>
             <form onSubmit={save} className="space-y-4">
               <Tabs defaultValue="principal">
                 <TabsList className="flex-wrap h-auto">
@@ -302,9 +327,12 @@ function Page() {
                 <TableCell>{calcIdade(r.dt_nascimento)}</TableCell>
                 <TableCell>{r.municipio}</TableCell>
                 <TableCell>
+                  <div className="flex gap-2">
+                  <Button size="sm" variant="ghost" onClick={() => openEdit(r.id)}><Pencil className="h-3 w-3 mr-1" />Editar</Button>
                   <Link to="/app/notificacoes/nova/$usuarioId" params={{ usuarioId: r.id }}>
                     <Button size="sm" variant="outline"><FileText className="h-3 w-3 mr-1" />Nova ficha Y09</Button>
                   </Link>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}</TableBody>

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TIPO_UNIDADE, ESFERA_ADMIN, GESTAO, NIVEL_ATENCAO } from "@/lib/violencia-options";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 
 export const Route = createFileRoute("/app/unidades-saude")({ component: Page });
 
@@ -31,6 +31,7 @@ function Page() {
   const [form, setForm] = useState({ ...empty });
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
 
   async function load() {
     const { data } = await supabase.from("unidades_saude").select("*").order("nome");
@@ -42,14 +43,27 @@ function Page() {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
+  function openNew() { setForm({ ...empty }); setEditId(null); setOpen(true); }
+  function openEdit(r: Row) {
+    const merged: typeof empty = { ...empty };
+    for (const k of Object.keys(empty) as (keyof typeof empty)[]) {
+      const v = r[k as string];
+      if (v != null) (merged as Record<string, unknown>)[k as string] = v;
+    }
+    setForm(merged); setEditId(r.id); setOpen(true);
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.from("unidades_saude").insert(form);
+    const { error } = editId
+      ? await supabase.from("unidades_saude").update(form).eq("id", editId)
+      : await supabase.from("unidades_saude").insert(form);
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Unidade cadastrada");
+    toast.success(editId ? "Unidade atualizada" : "Unidade cadastrada");
     setForm({ ...empty });
+    setEditId(null);
     setOpen(false);
     load();
   }
@@ -58,10 +72,10 @@ function Page() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Unidades de Saúde</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Nova unidade</Button></DialogTrigger>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ ...empty }); } }}>
+          <DialogTrigger asChild><Button onClick={openNew}><Plus className="h-4 w-4 mr-2" />Nova unidade</Button></DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>Nova Unidade de Saúde</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editId ? "Editar Unidade de Saúde" : "Nova Unidade de Saúde"}</DialogTitle></DialogHeader>
             <form onSubmit={save} className="space-y-4">
               <Tabs defaultValue="principal">
                 <TabsList className="flex-wrap h-auto">
@@ -144,7 +158,7 @@ function Page() {
           <Table>
             <TableHeader><TableRow>
               <TableHead>Nome</TableHead><TableHead>CNES</TableHead><TableHead>Cód</TableHead>
-              <TableHead>UF</TableHead><TableHead>Município</TableHead><TableHead>Tipo</TableHead><TableHead>Equipe</TableHead>
+              <TableHead>UF</TableHead><TableHead>Município</TableHead><TableHead>Tipo</TableHead><TableHead>Equipe</TableHead><TableHead></TableHead>
             </TableRow></TableHeader>
             <TableBody>{rows.map((r) => (
               <TableRow key={r.id}>
@@ -152,6 +166,7 @@ function Page() {
                 <TableCell>{r.cnes}</TableCell><TableCell>{r.codigo_unidade}</TableCell>
                 <TableCell>{r.uf}</TableCell><TableCell>{r.municipio}</TableCell>
                 <TableCell>{r.tipo_unidade}</TableCell><TableCell>{r.equipe}</TableCell>
+                <TableCell><Button size="sm" variant="ghost" onClick={() => openEdit(r)}><Pencil className="h-3 w-3 mr-1" />Editar</Button></TableCell>
               </TableRow>
             ))}</TableBody>
           </Table>
