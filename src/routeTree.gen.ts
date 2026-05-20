@@ -19,6 +19,8 @@ import { Route as AppUnidadesNotificadorasRouteImport } from './routes/app.unida
 import { Route as AppProfissionaisRouteImport } from './routes/app.profissionais'
 import { Route as AppPapeisRouteImport } from './routes/app.papeis'
 import { Route as AppNotificacoesRouteImport } from './routes/app.notificacoes'
+import { Route as AppExportSinanRouteImport } from './routes/app.export-sinan'
+import { Route as AppEpiRouteImport } from './routes/app.epi'
 import { Route as AppNotificacoesIdRouteImport } from './routes/app.notificacoes.$id'
 import { Route as AppNotificacoesNovaUsuarioIdRouteImport } from './routes/app.notificacoes.nova.$usuarioId'
 
@@ -73,6 +75,16 @@ const AppNotificacoesRoute = AppNotificacoesRouteImport.update({
   path: '/notificacoes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppExportSinanRoute = AppExportSinanRouteImport.update({
+  id: '/export-sinan',
+  path: '/export-sinan',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEpiRoute = AppEpiRouteImport.update({
+  id: '/epi',
+  path: '/epi',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNotificacoesIdRoute = AppNotificacoesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -89,6 +101,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/epi': typeof AppEpiRoute
+  '/app/export-sinan': typeof AppExportSinanRoute
   '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
   '/app/papeis': typeof AppPapeisRoute
   '/app/profissionais': typeof AppProfissionaisRoute
@@ -102,6 +116,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/app/epi': typeof AppEpiRoute
+  '/app/export-sinan': typeof AppExportSinanRoute
   '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
   '/app/papeis': typeof AppPapeisRoute
   '/app/profissionais': typeof AppProfissionaisRoute
@@ -117,6 +133,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/epi': typeof AppEpiRoute
+  '/app/export-sinan': typeof AppExportSinanRoute
   '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
   '/app/papeis': typeof AppPapeisRoute
   '/app/profissionais': typeof AppProfissionaisRoute
@@ -133,6 +151,8 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/app/epi'
+    | '/app/export-sinan'
     | '/app/notificacoes'
     | '/app/papeis'
     | '/app/profissionais'
@@ -146,6 +166,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/app/epi'
+    | '/app/export-sinan'
     | '/app/notificacoes'
     | '/app/papeis'
     | '/app/profissionais'
@@ -160,6 +182,8 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/app/epi'
+    | '/app/export-sinan'
     | '/app/notificacoes'
     | '/app/papeis'
     | '/app/profissionais'
@@ -249,6 +273,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificacoesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/export-sinan': {
+      id: '/app/export-sinan'
+      path: '/export-sinan'
+      fullPath: '/app/export-sinan'
+      preLoaderRoute: typeof AppExportSinanRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/epi': {
+      id: '/app/epi'
+      path: '/epi'
+      fullPath: '/app/epi'
+      preLoaderRoute: typeof AppEpiRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/notificacoes/$id': {
       id: '/app/notificacoes/$id'
       path: '/$id'
@@ -281,6 +319,8 @@ const AppNotificacoesRouteWithChildren = AppNotificacoesRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppEpiRoute: typeof AppEpiRoute
+  AppExportSinanRoute: typeof AppExportSinanRoute
   AppNotificacoesRoute: typeof AppNotificacoesRouteWithChildren
   AppPapeisRoute: typeof AppPapeisRoute
   AppProfissionaisRoute: typeof AppProfissionaisRoute
@@ -291,6 +331,8 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppEpiRoute: AppEpiRoute,
+  AppExportSinanRoute: AppExportSinanRoute,
   AppNotificacoesRoute: AppNotificacoesRouteWithChildren,
   AppPapeisRoute: AppPapeisRoute,
   AppProfissionaisRoute: AppProfissionaisRoute,

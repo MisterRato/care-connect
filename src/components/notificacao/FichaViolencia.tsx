@@ -20,7 +20,8 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { exportFichaPDF } from "@/lib/sinan-pdf";
-import { FileDown } from "lucide-react";
+import { exportNotificacoesXML } from "@/lib/sinan-xml";
+import { FileDown, FileCode2 } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -583,6 +584,17 @@ export function FichaViolencia({ usuario, notificacao }: Props) {
         })}>
           <FileDown className="h-4 w-4 mr-1" /> Exportar PDF
         </Button>
+        {!isNew && (
+          <Button variant="outline" onClick={() => exportNotificacoesXML([{
+            notificacao: { ...notificacao, payload: f, circunstancia_lesao: circLesao },
+            usuario,
+            unidade: unidades.find((u) => u.id === f.unidade_saude_id),
+            unidadeNotif: unidNotif.find((u) => u.id === f.unidade_notificadora_id),
+            profissional: profs.find((p) => p.id === f.profissional_id),
+          }], `sinan-y09-${usuario.nome.replace(/\s+/g, "_")}.xml`)}>
+            <FileCode2 className="h-4 w-4 mr-1" /> Exportar XML SINAN
+          </Button>
+        )}
         {(canEditUBS || isAdmin) && (
           <Button onClick={() => save()} disabled={busy}>
             {busy ? "Salvando..." : isNew ? "Salvar notificação" : "Salvar alterações"}
