@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { SEXO, CONSELHO_CLASSE } from "@/lib/violencia-options";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 
 export const Route = createFileRoute("/app/profissionais")({ component: Page });
 
@@ -31,6 +31,7 @@ function Page() {
   const [form, setForm] = useState({ ...empty });
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
 
   async function load() {
     const [{ data: p }, { data: u }] = await Promise.all([
@@ -46,6 +47,16 @@ function Page() {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
+  function openNew() { setForm({ ...empty }); setEditId(null); setOpen(true); }
+  function openEdit(r: Row) {
+    const merged: typeof empty = { ...empty };
+    for (const k of Object.keys(empty) as (keyof typeof empty)[]) {
+      const v = r[k as string];
+      if (v != null) (merged as Record<string, unknown>)[k as string] = v;
+    }
+    setForm(merged); setEditId(r.id); setOpen(true);
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -55,11 +66,14 @@ function Page() {
       dt_nascimento: form.dt_nascimento || null,
       data_admissao: form.data_admissao || null,
     };
-    const { error } = await supabase.from("profissionais").insert(payload);
+    const { error } = editId
+      ? await supabase.from("profissionais").update(payload).eq("id", editId)
+      : await supabase.from("profissionais").insert(payload);
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Profissional cadastrado");
+    toast.success(editId ? "Profissional atualizado" : "Profissional cadastrado");
     setForm({ ...empty });
+    setEditId(null);
     setOpen(false);
     load();
   }
@@ -68,10 +82,10 @@ function Page() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Profissionais de Saúde</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Novo</Button></DialogTrigger>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ ...empty }); } }}>
+          <DialogTrigger asChild><Button onClick={openNew}><Plus className="h-4 w-4 mr-2" />Novo</Button></DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>Novo Profissional</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editId ? "Editar Profissional" : "Novo Profissional"}</DialogTitle></DialogHeader>
             <form onSubmit={save} className="space-y-4">
               <Tabs defaultValue="pessoal">
                 <TabsList>
@@ -133,12 +147,13 @@ function Page() {
         <CardHeader><CardTitle>Cadastrados ({rows.length})</CardTitle></CardHeader>
         <CardContent>
           <Table>
-            <TableHeader><TableRow><TableHead>Nome</TableHead><TableHead>Ocupação</TableHead><TableHead>CBO</TableHead><TableHead>Conselho</TableHead><TableHead>Unidade</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Nome</TableHead><TableHead>Ocupação</TableHead><TableHead>CBO</TableHead><TableHead>Conselho</TableHead><TableHead>Unidade</TableHead><TableHead></TableHead></TableRow></TableHeader>
             <TableBody>{rows.map((r) => (
               <TableRow key={r.id}>
                 <TableCell className="font-medium">{r.nome}</TableCell><TableCell>{r.ocupacao}</TableCell><TableCell>{r.cbo}</TableCell>
                 <TableCell>{r.conselho_classe} {r.numero_conselho ? `· ${r.numero_conselho}/${r.uf_conselho ?? ""}` : ""}</TableCell>
                 <TableCell>{unidades.find((u) => u.id === r.unidade_saude_id)?.nome ?? "-"}</TableCell>
+                <TableCell><Button size="sm" variant="ghost" onClick={() => openEdit(r)}><Pencil className="h-3 w-3 mr-1" />Editar</Button></TableCell>
               </TableRow>
             ))}</TableBody>
           </Table>
