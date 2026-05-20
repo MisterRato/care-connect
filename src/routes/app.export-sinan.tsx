@@ -36,7 +36,7 @@ function Page() {
       .select("id,status,data_notificacao,circunstancia_lesao,usuario_sus_id,unidade_saude_id,unidade_notificadora_id,profissional_id,payload,data_ocorrencia,usuarios_sus(nome),unidades_saude(nome)")
       .order("data_notificacao", { ascending: false })
       .limit(500);
-    if (status !== "__all") q = q.eq("status", status);
+    if (status !== "__all") q = q.eq("status", status as "ubs" | "epi" | "encerrada");
     if (from) q = q.gte("data_notificacao", from);
     if (to) q = q.lte("data_notificacao", to);
     if (unit !== "__all") q = q.eq("unidade_saude_id", unit);
