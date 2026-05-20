@@ -327,9 +327,12 @@ function Page() {
                 <TableCell>{calcIdade(r.dt_nascimento)}</TableCell>
                 <TableCell>{r.municipio}</TableCell>
                 <TableCell>
+                  <div className="flex gap-2">
+                  <Button size="sm" variant="ghost" onClick={() => openEdit(r.id)}><Pencil className="h-3 w-3 mr-1" />Editar</Button>
                   <Link to="/app/notificacoes/nova/$usuarioId" params={{ usuarioId: r.id }}>
                     <Button size="sm" variant="outline"><FileText className="h-3 w-3 mr-1" />Nova ficha Y09</Button>
                   </Link>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}</TableBody>
