@@ -24,6 +24,7 @@ import { Route as AppEpiRouteImport } from './routes/app.epi'
 import { Route as AppNotificacoesIdRouteImport } from './routes/app.notificacoes.$id'
 import { Route as AppNotificacoesNovaUsuarioIdRouteImport } from './routes/app.notificacoes.nova.$usuarioId'
 import { Route as ApiAuthGovbrStartRouteImport } from './routes/api/auth/govbr/start'
+import { Route as ApiAuthGovbrCallbackRouteImport } from './routes/api/auth/govbr/callback'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -102,6 +103,11 @@ const ApiAuthGovbrStartRoute = ApiAuthGovbrStartRouteImport.update({
   path: '/api/auth/govbr/start',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthGovbrCallbackRoute = ApiAuthGovbrCallbackRouteImport.update({
+  id: '/api/auth/govbr/callback',
+  path: '/api/auth/govbr/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app/': typeof AppIndexRoute
   '/app/notificacoes/$id': typeof AppNotificacoesIdRoute
+  '/api/auth/govbr/callback': typeof ApiAuthGovbrCallbackRoute
   '/api/auth/govbr/start': typeof ApiAuthGovbrStartRoute
   '/app/notificacoes/nova/$usuarioId': typeof AppNotificacoesNovaUsuarioIdRoute
 }
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app': typeof AppIndexRoute
   '/app/notificacoes/$id': typeof AppNotificacoesIdRoute
+  '/api/auth/govbr/callback': typeof ApiAuthGovbrCallbackRoute
   '/api/auth/govbr/start': typeof ApiAuthGovbrStartRoute
   '/app/notificacoes/nova/$usuarioId': typeof AppNotificacoesNovaUsuarioIdRoute
 }
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/app/usuarios-sus': typeof AppUsuariosSusRoute
   '/app/': typeof AppIndexRoute
   '/app/notificacoes/$id': typeof AppNotificacoesIdRoute
+  '/api/auth/govbr/callback': typeof ApiAuthGovbrCallbackRoute
   '/api/auth/govbr/start': typeof ApiAuthGovbrStartRoute
   '/app/notificacoes/nova/$usuarioId': typeof AppNotificacoesNovaUsuarioIdRoute
 }
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/app/usuarios-sus'
     | '/app/'
     | '/app/notificacoes/$id'
+    | '/api/auth/govbr/callback'
     | '/api/auth/govbr/start'
     | '/app/notificacoes/nova/$usuarioId'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/app/usuarios-sus'
     | '/app'
     | '/app/notificacoes/$id'
+    | '/api/auth/govbr/callback'
     | '/api/auth/govbr/start'
     | '/app/notificacoes/nova/$usuarioId'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/app/usuarios-sus'
     | '/app/'
     | '/app/notificacoes/$id'
+    | '/api/auth/govbr/callback'
     | '/api/auth/govbr/start'
     | '/app/notificacoes/nova/$usuarioId'
   fileRoutesById: FileRoutesById
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ApiAuthGovbrCallbackRoute: typeof ApiAuthGovbrCallbackRoute
   ApiAuthGovbrStartRoute: typeof ApiAuthGovbrStartRoute
 }
 
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthGovbrStartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/govbr/callback': {
+      id: '/api/auth/govbr/callback'
+      path: '/api/auth/govbr/callback'
+      fullPath: '/api/auth/govbr/callback'
+      preLoaderRoute: typeof ApiAuthGovbrCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  ApiAuthGovbrCallbackRoute: ApiAuthGovbrCallbackRoute,
   ApiAuthGovbrStartRoute: ApiAuthGovbrStartRoute,
 }
 export const routeTree = rootRouteImport
