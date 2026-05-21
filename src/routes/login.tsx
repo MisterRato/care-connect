@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,39 @@ function LoginPage() {
   useEffect(() => {
     if (!loading && session) navigate({ to: "/app" });
   }, [loading, session, navigate]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get("govbr_error");
+    if (err) {
+      toast.error(`Falha no login Gov.br: ${err}`);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
+  async function signInOAuth(provider: "google" | "apple") {
+    setBusy(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: window.location.origin + "/app",
+      });
+      if (result.error) throw result.error;
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function signInGovbr() {
+    window.location.href = "/api/auth/govbr/start";
+  }
+
+  function signInMeta() {
+    toast.error(
+      "Login com Meta (Facebook) não está disponível no Lovable Cloud gerenciado. Requer conexão direta com Supabase para habilitar o provedor Facebook.",
+    );
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -62,6 +96,26 @@ function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="space-y-2 mb-4">
+            <Button type="button" variant="outline" className="w-full" disabled={busy} onClick={() => signInOAuth("google")}>
+              Entrar com Google
+            </Button>
+            <Button type="button" variant="outline" className="w-full" disabled={busy} onClick={() => signInOAuth("apple")}>
+              Entrar com Apple
+            </Button>
+            <Button type="button" variant="outline" className="w-full" disabled={busy} onClick={signInGovbr}>
+              Entrar com Gov.br
+            </Button>
+            <Button type="button" variant="outline" className="w-full" disabled={busy} onClick={signInMeta}>
+              Entrar com Meta
+            </Button>
+          </div>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">ou com e-mail</span>
+            </div>
+          </div>
           <form onSubmit={submit} className="space-y-4">
             {mode === "signup" && (
               <div className="space-y-2">
