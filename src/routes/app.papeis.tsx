@@ -9,6 +9,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { translateError } from "@/lib/error-messages";
 
 export const Route = createFileRoute("/app/papeis")({
   component: Page,
@@ -34,14 +46,15 @@ function Page() {
     e.preventDefault();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase.from("user_roles").insert({ user_id: userId, role: role as any });
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(translateError(error));
     toast.success("Papel atribuído");
     setUserId("");
     load();
   }
   async function remove(id: string) {
     const { error } = await supabase.from("user_roles").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(translateError(error));
+    toast.success("Atribuição removida");
     load();
   }
 
@@ -80,7 +93,28 @@ function Page() {
               <TableRow key={r.id}>
                 <TableCell className="font-mono text-xs">{r.user_id}</TableCell>
                 <TableCell>{r.role}</TableCell>
-                <TableCell><Button size="sm" variant="ghost" onClick={() => remove(r.id)}>Remover</Button></TableCell>
+                <TableCell>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="sm" variant="ghost">Remover</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Remover atribuição de papel?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          O usuário perderá imediatamente as permissões do papel
+                          <strong> {r.role}</strong>. Esta ação não pode ser desfeita.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => remove(r.id)}>
+                          Remover
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
               </TableRow>
             ))}</TableBody>
           </Table>

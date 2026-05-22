@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
+import { translateError } from "@/lib/error-messages";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -30,7 +31,7 @@ function LoginPage() {
     const params = new URLSearchParams(window.location.search);
     const err = params.get("govbr_error");
     if (err) {
-      toast.error(`Falha no login Gov.br: ${err}`);
+      toast.error(`Falha no login Gov.br: ${translateError(err)}`);
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
@@ -43,7 +44,7 @@ function LoginPage() {
       });
       if (result.error) throw result.error;
     } catch (err) {
-      toast.error((err as Error).message);
+      toast.error(translateError(err));
     } finally {
       setBusy(false);
     }
@@ -80,7 +81,7 @@ function LoginPage() {
         setMode("signin");
       }
     } catch (err) {
-      toast.error((err as Error).message);
+      toast.error(translateError(err));
     } finally {
       setBusy(false);
     }
