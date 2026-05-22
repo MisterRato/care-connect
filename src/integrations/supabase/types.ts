@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      activity_logs: {
-        Row: {
-          action: string
-          created_at: string
-          id: string
-          ip_hint: string | null
-          metadata: Json
-          resource: string | null
-          success: boolean
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          created_at?: string
-          id?: string
-          ip_hint?: string | null
-          metadata?: Json
-          resource?: string | null
-          success?: boolean
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          created_at?: string
-          id?: string
-          ip_hint?: string | null
-          metadata?: Json
-          resource?: string | null
-          success?: boolean
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       notificacoes_violencia: {
         Row: {
           circunstancia_lesao: string | null
@@ -511,7 +478,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      anonymize_cpf: { Args: { cpf: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
