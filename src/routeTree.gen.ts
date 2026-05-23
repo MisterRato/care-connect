@@ -21,6 +21,7 @@ import { Route as AppPapeisRouteImport } from './routes/app.papeis'
 import { Route as AppNotificacoesRouteImport } from './routes/app.notificacoes'
 import { Route as AppExportSinanRouteImport } from './routes/app.export-sinan'
 import { Route as AppEpiRouteImport } from './routes/app.epi'
+import { Route as AppCompletarCadastroRouteImport } from './routes/app.completar-cadastro'
 import { Route as AppNotificacoesIdRouteImport } from './routes/app.notificacoes.$id'
 import { Route as AppNotificacoesNovaUsuarioIdRouteImport } from './routes/app.notificacoes.nova.$usuarioId'
 import { Route as ApiAuthGovbrStartRouteImport } from './routes/api/auth/govbr/start'
@@ -87,6 +88,11 @@ const AppEpiRoute = AppEpiRouteImport.update({
   path: '/epi',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCompletarCadastroRoute = AppCompletarCadastroRouteImport.update({
+  id: '/completar-cadastro',
+  path: '/completar-cadastro',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNotificacoesIdRoute = AppNotificacoesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/completar-cadastro': typeof AppCompletarCadastroRoute
   '/app/epi': typeof AppEpiRoute
   '/app/export-sinan': typeof AppExportSinanRoute
   '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
@@ -130,6 +137,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/app/completar-cadastro': typeof AppCompletarCadastroRoute
   '/app/epi': typeof AppEpiRoute
   '/app/export-sinan': typeof AppExportSinanRoute
   '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/completar-cadastro': typeof AppCompletarCadastroRoute
   '/app/epi': typeof AppEpiRoute
   '/app/export-sinan': typeof AppExportSinanRoute
   '/app/notificacoes': typeof AppNotificacoesRouteWithChildren
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/app/completar-cadastro'
     | '/app/epi'
     | '/app/export-sinan'
     | '/app/notificacoes'
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/app/completar-cadastro'
     | '/app/epi'
     | '/app/export-sinan'
     | '/app/notificacoes'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/app/completar-cadastro'
     | '/app/epi'
     | '/app/export-sinan'
     | '/app/notificacoes'
@@ -313,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEpiRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/completar-cadastro': {
+      id: '/app/completar-cadastro'
+      path: '/completar-cadastro'
+      fullPath: '/app/completar-cadastro'
+      preLoaderRoute: typeof AppCompletarCadastroRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/notificacoes/$id': {
       id: '/app/notificacoes/$id'
       path: '/$id'
@@ -359,6 +378,7 @@ const AppNotificacoesRouteWithChildren = AppNotificacoesRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppCompletarCadastroRoute: typeof AppCompletarCadastroRoute
   AppEpiRoute: typeof AppEpiRoute
   AppExportSinanRoute: typeof AppExportSinanRoute
   AppNotificacoesRoute: typeof AppNotificacoesRouteWithChildren
@@ -371,6 +391,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppCompletarCadastroRoute: AppCompletarCadastroRoute,
   AppEpiRoute: AppEpiRoute,
   AppExportSinanRoute: AppExportSinanRoute,
   AppNotificacoesRoute: AppNotificacoesRouteWithChildren,
