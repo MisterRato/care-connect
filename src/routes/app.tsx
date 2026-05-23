@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate, useLocation } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,10 +20,50 @@ function AppLayout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { loading, session, roles, isAdmin, isEpi, isUbs, signOut, user } = useAuth();
+  const [profCheck, setProfCheck] = useState<"idle" | "checking" | "done">("idle");
 
   useEffect(() => {
     if (!loading && !session) navigate({ to: "/login" });
   }, [loading, session, navigate]);
+
+  // After login, ensure the user is linked to a profissional record.
+  // Skip when already on the completar-cadastro page to avoid loops.
+  useEffect(() => {
+    if (loading || !session || !user) return;
+    if (pathname.startsWith("/app/completar-cadastro")) return;
+    if (profCheck !== "idle") return;
+    setProfCheck("checking");
+    (async () => {
+      const email = user.email ?? "";
+      // 1) by user_id
+      const { data: byUid } = await supabase
+        .from("profissionais")
+        .select("id,user_id,email")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (byUid) {
+        setProfCheck("done");
+        return;
+      }
+      // 2) by email (link if found)
+      if (email) {
+        const { data: byEmail } = await supabase
+          .from("profissionais")
+          .select("id,user_id")
+          .ilike("email", email)
+          .maybeSingle();
+        if (byEmail) {
+          if (!byEmail.user_id) {
+            await supabase.from("profissionais").update({ user_id: user.id }).eq("id", byEmail.id);
+          }
+          setProfCheck("done");
+          return;
+        }
+      }
+      setProfCheck("done");
+      navigate({ to: "/app/completar-cadastro" });
+    })();
+  }, [loading, session, user, pathname, profCheck, navigate]);
 
   if (loading || !session) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Carregando...</div>;
